@@ -1,0 +1,78 @@
+import React from 'react';
+import { useParams } from 'react-router-dom';
+import ProductCard from '@/components/ProductCard.jsx';
+import ConversionPageTemplate from '@/components/ConversionPageTemplate.jsx';
+import NotFoundPage from '@/pages/NotFoundPage.jsx';
+import {
+  getProductByRoute,
+  getRelatedProducts
+} from '@/data/catalog.js';
+
+const ProductLandingPage = () => {
+  const params = useParams();
+  const product = getProductByRoute(params);
+
+  if (!product) {
+    return <NotFoundPage />;
+  }
+
+  const relatedProducts = getRelatedProducts(product.id, 3);
+  const backHref = product.language ? product.language.href : product.line.href;
+  const backLabel = product.language ? `Voltar para ${product.language.name}` : `Voltar para ${product.line.title}`;
+
+  return (
+    <>
+      <ConversionPageTemplate
+        lineName={product.line.shortTitle}
+        languageName={product.language?.name}
+        title={product.name}
+        description={product.summary}
+        metaDescription={product.summary}
+        promise={product.promise}
+        formatLabel={product.formatLabel}
+        deliveryLabel={product.deliveryLabel}
+        checkoutLabel={product.checkoutLabel}
+        benefits={product.benefits}
+        deliverables={product.deliverables}
+        idealFor={product.idealFor}
+        offers={product.offers}
+        faqs={product.faqs}
+        ctaHref={product.hotmartUrl}
+        ctaLabel={product.type === 'service' ? 'Reservar vaga' : 'Comprar agora'}
+        ctaNote="Esta página já está preparada para checkout. Assim que o link da Hotmart for publicado, a compra ficará disponível neste botão."
+        secondaryCtaLabel="Ir para contato"
+        secondaryCtaHref="/contato"
+        backHref={backHref}
+        backLabel={backLabel}
+      />
+
+      {relatedProducts.length > 0 && (
+        <section className="pb-24">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="mb-8">
+              <h2 className="text-3xl md:text-4xl font-black font-heading">Continue nesta linha</h2>
+              <p className="text-lg font-medium text-muted-foreground">
+                Outras páginas já estruturadas para converter dentro do mesmo ecossistema.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+              {relatedProducts.map((relatedProduct, index) => (
+                <ProductCard
+                  key={relatedProduct.id}
+                  name={relatedProduct.name}
+                  description={relatedProduct.summary}
+                  price={relatedProduct.checkoutLabel}
+                  href={relatedProduct.href}
+                  delay={index * 0.06}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+    </>
+  );
+};
+
+export default ProductLandingPage;

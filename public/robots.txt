@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://omeridiano.com.br/sitemap.xml
