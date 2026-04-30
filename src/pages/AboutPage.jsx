@@ -1,10 +1,73 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { useLocation } from 'react-router-dom';
+import { CheckCircle2, Send } from 'lucide-react';
+import pb from '@/lib/pocketbaseClient.js';
 
 const AboutPage = () => {
+  const location = useLocation();
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    subject: '',
+    preferredContact: '',
+    message: ''
+  });
+  const [status, setStatus] = useState('idle');
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const isFormValid =
+    formData.name.trim() &&
+    formData.email.trim() &&
+    formData.phone.trim() &&
+    formData.subject.trim() &&
+    formData.preferredContact.trim() &&
+    formData.message.trim();
+
+  useEffect(() => {
+    if (!location.hash) return;
+    const id = location.hash.replace('#', '');
+    const el = document.getElementById(id);
+    if (el) {
+      const top = el.getBoundingClientRect().top + window.scrollY - 88;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
+  }, [location.hash]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus('loading');
+    setErrorMessage('');
+
+    try {
+      await pb.collection('contacts').create(formData, { $autoCancel: false });
+      setStatus('success');
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        subject: '',
+        preferredContact: '',
+        message: ''
+      });
+    } catch (err) {
+      console.error('Contact submission error:', err);
+      setStatus('error');
+      setErrorMessage('Não foi possível enviar sua mensagem agora. Tente novamente.');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
@@ -148,38 +211,161 @@ const AboutPage = () => {
         </div>
       </section>
 
-      <section className="py-16 bg-background">
-        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <section id="contato" className="py-5 bg-background">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, scale: 0.96 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.4 }}
-            className="bg-primary border-thick rounded-2xl p-8 neo-shadow-lg"
+            className="bg-primary border-thick rounded-2xl p-4 md:p-5 neo-shadow-lg"
           >
-            <h2 className="text-2xl md:text-3xl font-black font-heading mb-3">
-              Chega de tentar adivinhar o próximo passo.
+            <h2 className="text-xl md:text-2xl font-black font-heading mb-2 text-center">
+              Falar com a equipe
             </h2>
 
-            <p className="text-sm font-bold mb-7">
-              O quiz identifica onde você está travado e te mostra por onde sair.
+            <p className="text-xs md:text-sm font-bold mb-3 text-center">
+              Se você ainda não sabe qual é o melhor próximo passo, me conte seu momento.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-  <Button
-    asChild
-    className="w-full sm:w-auto bg-black text-primary border-thick rounded-xl neo-shadow hover:bg-black/90 hover:-translate-y-1 transition-all font-black text-sm h-11 px-7"
-  >
-    <a href="/#quiz">Fazer o quiz agora →</a>
-  </Button>
+            {status === 'success' ? (
+              <div className="bg-background border-thick rounded-2xl p-6 text-center neo-shadow flex flex-col items-center">
+                <CheckCircle2 className="w-12 h-12 text-primary mb-3" />
+                <h3 className="text-xl md:text-2xl font-black font-heading mb-2">Mensagem enviada</h3>
+                <p className="text-sm md:text-base font-bold mb-5">Recebi seu contato e vou responder no seu e-mail assim que puder.</p>
+                <Button
+                  onClick={() => setStatus('idle')}
+                  className="bg-black text-primary border-thick rounded-xl neo-shadow hover:bg-black/90 hover:-translate-y-1 transition-all font-black text-sm h-10 px-6"
+                >
+                  Enviar outra mensagem
+                </Button>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-3 bg-background border-thick rounded-2xl p-4 neo-shadow">
+                {status === 'error' && (
+                  <div className="md:col-span-2 bg-destructive/10 text-destructive border-[3px] border-destructive rounded-xl p-3 font-bold text-sm">
+                    {errorMessage}
+                  </div>
+                )}
 
-  <Link to="/contato">
-    <Button className="w-full sm:w-auto bg-secondary text-secondary-foreground border-thick rounded-xl neo-shadow hover:bg-secondary/90 hover:-translate-y-1 transition-all font-black text-sm h-11 px-7">
-      Falar com a equipe
-    </Button>
-  </Link>
-</div>
+                <div className="space-y-1">
+                  <Label htmlFor="name" className="font-bold text-xs md:text-sm">Nome</Label>
+                  <Input
+                    id="name"
+                    name="name"
+                    required
+                    value={formData.name}
+                    onChange={handleChange}
+                    placeholder="Como posso te chamar?"
+                    className="h-9 border-thick rounded-xl text-sm font-medium text-black focus-visible:ring-primary focus-visible:ring-offset-2"
+                  />
+                </div>
 
+                <div className="space-y-1">
+                  <Label htmlFor="email" className="font-bold text-xs md:text-sm">E-mail</Label>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    required
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="seu@email.com"
+                    className="h-9 border-thick rounded-xl text-sm font-medium text-black focus-visible:ring-primary focus-visible:ring-offset-2"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <Label htmlFor="phone" className="font-bold text-xs md:text-sm">Telefone</Label>
+                  <Input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    required
+                    value={formData.phone}
+                    onChange={handleChange}
+                    placeholder="(11) 99999-9999"
+                    className="h-9 border-thick rounded-xl text-sm font-medium text-black focus-visible:ring-primary focus-visible:ring-offset-2"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <Label htmlFor="subject" className="font-bold text-xs md:text-sm">Assunto</Label>
+                  <Input
+                    id="subject"
+                    name="subject"
+                    required
+                    value={formData.subject}
+                    onChange={handleChange}
+                    placeholder="Qual é sua principal dúvida?"
+                    className="h-9 border-thick rounded-xl text-sm font-medium text-black focus-visible:ring-primary focus-visible:ring-offset-2"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <Label className="font-bold text-sm">Prefere comunicação por</Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <label className="flex items-center gap-2 bg-secondary border-thick rounded-xl px-3 h-9 font-bold text-black cursor-pointer text-sm">
+                      <input
+                        type="radio"
+                        name="preferredContact"
+                        value="email"
+                        required
+                        checked={formData.preferredContact === 'email'}
+                        onChange={handleChange}
+                        className="h-4 w-4 accent-black"
+                      />
+                      E-mail
+                    </label>
+                    <label className="flex items-center gap-2 bg-secondary border-thick rounded-xl px-3 h-9 font-bold text-black cursor-pointer text-sm">
+                      <input
+                        type="radio"
+                        name="preferredContact"
+                        value="whatsapp"
+                        checked={formData.preferredContact === 'whatsapp'}
+                        onChange={handleChange}
+                        className="h-4 w-4 accent-black"
+                      />
+                      WhatsApp
+                    </label>
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <Label htmlFor="message" className="font-bold text-sm">Mensagem</Label>
+                  <Textarea
+                    id="message"
+                    name="message"
+                    required
+                    value={formData.message}
+                    onChange={handleChange}
+                    placeholder="Me conte do que você precisa hoje."
+                    className="min-h-[70px] resize-none border-thick rounded-xl text-sm font-medium text-black focus-visible:ring-primary focus-visible:ring-offset-2 p-3"
+                  />
+                </div>
+
+                <Button
+                  type="submit"
+                  disabled={status === 'loading' || !isFormValid}
+                  className="md:col-span-2 w-full h-9 bg-black text-primary border-thick rounded-xl neo-shadow hover:bg-black/90 hover:-translate-y-1 transition-all font-black text-sm"
+                >
+                  {status === 'loading' ? 'Enviando...' : (
+                    <>
+                      Enviar mensagem <Send className="w-4 h-4 ml-2" />
+                    </>
+                  )}
+                </Button>
+              </form>
+            )}
+
+            <div className="flex justify-center mt-3">
+              <Button
+                asChild
+                className="w-full sm:w-auto bg-black text-primary border-thick rounded-xl neo-shadow hover:bg-black/90 hover:-translate-y-1 transition-all font-black text-sm h-9 px-5"
+              >
+                <a href="/#quiz">Fazer o quiz agora →</a>
+              </Button>
+            </div>
           </motion.div>
         </div>
       </section>

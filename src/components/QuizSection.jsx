@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, CheckCircle2 } from 'lucide-react';
+import { ArrowRight, CheckCircle2, RotateCcw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useQuizResult } from '@/hooks/use-user-storage.js';
 
 const quizQuestions = [
   {
@@ -45,34 +46,34 @@ const quizQuestions = [
 const resultContent = {
   start: {
     title: 'Você precisa de direção clara',
-    description:
-      'Seu momento pede um caminho estruturado para começar com segurança, sem perder tempo com tentativa e erro.'
+    description: 'Seu momento pede um caminho estruturado para começar com segurança, sem perder tempo com tentativa e erro.'
   },
   accelerate: {
     title: 'Você precisa ajustar sua estratégia',
-    description:
-      'Você já começou, mas precisa organizar melhor seu método, materiais e decisões para avançar com mais resultado.'
+    description: 'Você já começou, mas precisa organizar melhor seu método, materiais e decisões para avançar com mais resultado.'
   },
   mentor: {
     title: 'Você precisa de orientação mais próxima',
-    description:
-      'Seu momento pede direcionamento mais individual para tomar decisões com segurança e não continuar travando sozinho.'
+    description: 'Seu momento pede direcionamento mais individual para tomar decisões com segurança e não continuar travando sozinho.'
   }
 };
 
 const areas = [
-  { label: 'Quero melhorar minha carreira', slug: 'carreira' },
-  { label: 'Quero organizar meus estudos e pós', slug: 'academico' },
-  { label: 'Quero aprender idiomas com método', slug: 'idiomas' },
-  { label: 'Quero estudar melhor com ferramentas e IA', slug: 'vida-adulta' }
+  { label: 'Quero melhorar minha carreira',             slug: 'carreira'     },
+  { label: 'Quero organizar meus estudos e pós',        slug: 'academico'    },
+  { label: 'Quero aprender idiomas com método',         slug: 'idiomas'      },
+  { label: 'Quero estudar melhor com ferramentas e IA', slug: 'vida-adulta'  }
 ];
 
-const QuizSection = ({ id = 'quiz' }) => {
-  const [step, setStep] = useState('question');
-  const [result, setResult] = useState(null);
+const QuizSection = ({ id = 'quiz', userId }) => {
+  const [step,            setStep]            = useState('question');
+  const [result,          setResult]          = useState(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState([]);
+  const [answers,         setAnswers]         = useState([]);
   const navigate = useNavigate();
+
+  // Salva resultado automaticamente ao finalizar
+  const { saveQuizResult } = useQuizResult(userId);
 
   const handleAnswer = (type) => {
     const nextAnswers = [...answers, type];
@@ -84,10 +85,7 @@ const QuizSection = ({ id = 'quiz' }) => {
     }
 
     const score = nextAnswers.reduce(
-      (acc, answer) => ({
-        ...acc,
-        [answer]: (acc[answer] || 0) + 1
-      }),
+      (acc, answer) => ({ ...acc, [answer]: (acc[answer] || 0) + 1 }),
       { start: 0, accelerate: 0, mentor: 0 }
     );
 
@@ -98,16 +96,25 @@ const QuizSection = ({ id = 'quiz' }) => {
 
     setResult(finalType);
     setStep('result');
+
+    // Persiste no localStorage para exibir no perfil
+    saveQuizResult({ type: finalType, ...resultContent[finalType] });
   };
 
   const handleRedirect = (slug) => navigate(`/${slug}`);
+
+  const handleReset = () => {
+    setStep('question');
+    setResult(null);
+    setCurrentQuestion(0);
+    setAnswers([]);
+  };
 
   const progress = (currentQuestion / quizQuestions.length) * 100;
 
   return (
     <section id={id} className="bg-black border-t-[3px] border-black py-10">
       <div className="max-w-xl mx-auto px-4 text-center">
-
         <AnimatePresence mode="wait">
 
           {step === 'question' && (
@@ -120,7 +127,6 @@ const QuizSection = ({ id = 'quiz' }) => {
               <p className="text-xs uppercase tracking-widest text-primary/60 mb-2">
                 Descubra seu próximo passo
               </p>
-
               <h2 className="text-xl font-black text-white mb-6">
                 Responda algumas perguntas e descubra o melhor próximo passo para você
               </h2>
@@ -128,15 +134,12 @@ const QuizSection = ({ id = 'quiz' }) => {
               <div className="h-1 bg-white/10 mb-2">
                 <div className="h-full bg-primary" style={{ width: `${progress}%` }} />
               </div>
-
               <p className="text-xs text-white/30 mb-6">
                 Pergunta {currentQuestion + 1} de {quizQuestions.length}
               </p>
-
               <p className="text-lg font-black text-white mb-4">
                 {quizQuestions[currentQuestion].prompt}
               </p>
-
               <div className="flex flex-col gap-2">
                 {quizQuestions[currentQuestion].options.map((option) => (
                   <button
@@ -152,23 +155,16 @@ const QuizSection = ({ id = 'quiz' }) => {
           )}
 
           {step === 'result' && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-            >
+            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}>
               <div className="bg-primary text-black p-6 rounded-2xl border-2 border-black">
-                <h2 className="text-2xl font-black mb-2">
-                  {resultContent[result].title}
-                </h2>
-
-                <p className="mb-5 font-bold">
-                  {resultContent[result].description}
+                <p className="text-[10px] font-black uppercase tracking-widest text-black/50 mb-2">
+                  Resultado salvo no seu perfil ✓
                 </p>
-
+                <h2 className="text-2xl font-black mb-2">{resultContent[result].title}</h2>
+                <p className="mb-5 font-bold">{resultContent[result].description}</p>
                 <p className="text-xs uppercase mb-3 opacity-70">
                   Baseado no seu momento, escolha por onde continuar:
                 </p>
-
                 <div className="flex flex-col gap-2">
                   {areas.map((area) => (
                     <button
@@ -181,6 +177,13 @@ const QuizSection = ({ id = 'quiz' }) => {
                     </button>
                   ))}
                 </div>
+                <button
+                  onClick={handleReset}
+                  className="mt-4 w-full flex items-center justify-center gap-2 text-sm font-bold text-black/60 hover:text-black transition-colors py-2"
+                >
+                  <RotateCcw size={14} />
+                  Refazer o quiz
+                </button>
               </div>
             </motion.div>
           )}

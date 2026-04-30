@@ -1,9 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
 const NotFoundPage = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-[70vh] px-4 text-center">
+      <Helmet>
+        <title>Página não encontrada | O Meridiano</title>
+        <meta
+          name="description"
+          content="A página que você tentou acessar não existe ou foi movida."
+        />
+      </Helmet>
       <h1 className="text-6xl font-black font-heading mb-6 border-[3px] border-black p-6 bg-primary rounded-none neo-shadow">
         404
       </h1>
