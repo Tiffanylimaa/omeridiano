@@ -17,10 +17,10 @@ import UserProfilePage from './pages/UserProfilePage.jsx';
 import ChecklistCapturePage from './pages/recursos/ChecklistCapturePage.jsx';
 import ChecklistMestradoCapturePage from './pages/recursos/ChecklistMestradoCapturePage.jsx';
 import MiniCursoMandarimCapturePage from './pages/recursos/MiniCursoMandarimCapturePage.jsx';
-import ChecklistDocumentosCapturePage from './pages/recursos/ChecklistDocumentosCapturePage.jsx';
 import ChecklistMudancaCapturePage from './pages/recursos/ChecklistMudancaCapturePage.jsx';
 
 import LineHubPage from './pages/catalog/LineHubPage.jsx';
+import PromptsHubPage from './pages/PromptsHubPage.jsx';
 import LanguageHubPage from './pages/catalog/LanguageHubPage.jsx';
 import ProductLandingPage from './pages/catalog/ProductLandingPage.jsx';
 
@@ -35,10 +35,11 @@ const legacyRedirects = [
   { from: '/academico/checklist-mestrado-completo', to: '/academico/checklist-de-aprovacao-no-mestrado' },
   { from: '/academico/mentoria-escrita-cientifica', to: '/academico/mentoria-de-escrita-cientifica' },
   { from: '/idiomas/imersao-profissional', to: '/idiomas/ingles/ingles-profissional-imersao' },
-  { from: '/idiomas/guia-poliglota', to: '/idiomas/multilingue/guia-do-poliglota' },
+  { from: '/idiomas/guia-poliglota', to: '/idiomas/projeto-poliglota/guia-do-poliglota' },
+  { from: '/idiomas/multilingue', to: '/idiomas/projeto-poliglota' },
+  { from: '/idiomas/multilingue/guia-do-poliglota', to: '/idiomas/projeto-poliglota/guia-do-poliglota' },
+  { from: '/idiomas/multilingue/pack-de-prompts-para-idiomas', to: '/idiomas/projeto-poliglota/pack-de-prompts-para-idiomas' },
   { from: '/idiomas/cursos-mandarim-hsk', to: '/idiomas/mandarim/mandarim-hsk-1-2-3' },
-  { from: '/viagens/guia-entrevista-consular', to: '/viagens/guia-de-entrevista-consular' },
-  { from: '/viagens/consultoria-mobilidade-global', to: '/viagens/consultoria-de-mobilidade-global' },
   { from: '/vida-adulta/planner-financeiro-fx', to: '/vida-adulta/planner-financeiro' },
   { from: '/vida-adulta/hub-vida-completa-notion', to: '/vida-adulta/templates-de-organizacao' }
 ];
@@ -70,7 +71,6 @@ function App() {
               <Route path="/recursos/checklist-vagas-internacionais" element={<ChecklistCapturePage />} />
               <Route path="/recursos/checklist-mestrado-submissao" element={<ChecklistMestradoCapturePage />} />
               <Route path="/recursos/mini-curso-mandarim" element={<MiniCursoMandarimCapturePage />} />
-              <Route path="/recursos/checklist-documentos-pais" element={<ChecklistDocumentosCapturePage />} />
               <Route path="/recursos/checklist-mudanca" element={<ChecklistMudancaCapturePage />} />
 
               {legacyRedirects.map((redirect) => (
@@ -80,6 +80,8 @@ function App() {
                   element={<Navigate to={redirect.to} replace />}
                 />
               ))}
+
+              <Route path="/prompts" element={<PromptsHubPage />} />
 
               <Route path="/idiomas/:languageSlug/:productSlug" element={<ProductLandingPage />} />
               <Route path="/idiomas/:languageSlug" element={<LanguageHubPage />} />

@@ -1,0 +1,25 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="holo45" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f9e84a"></stop>
+      <stop offset="30%" stop-color="#f9b8e0"></stop>
+      <stop offset="60%" stop-color="#c8b8f0"></stop>
+      <stop offset="100%" stop-color="#a8e8c8"></stop>
+    </linearGradient>
+  </defs>
+  
+  <rect width="64" height="64" rx="13" fill="#fefce8"></rect>
+  
+  <rect width="62" height="62" x="1" y="1" rx="12" fill="none" stroke="#111111" stroke-width="2.5"></rect>
+  
+  <path d="M15,32 Q32,7 49,32 Q32,57 15,32Z" fill="url(#holo45)" opacity="0.35"></path>
+  
+  <path d="M15,32 Q32,7 49,32 Q32,57 15,32Z" fill="none" stroke="#111111" stroke-width="2.5"></path>
+  
+  <line x1="10" y1="32" x2="54" y2="32" stroke="#111111" stroke-width="1.8" stroke-linecap="round"></line>
+  
+  <rect x="28.5" y="28.5" width="7" height="7" fill="url(#holo45)" stroke="#111111" stroke-width="1.5" transform="rotate(45 32 32)"></rect>
+  
+  <circle cx="15" cy="32" r="2" fill="#111111"></circle>
+  <circle cx="49" cy="32" r="2" fill="#111111"></circle>
+</svg>

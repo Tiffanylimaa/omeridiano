@@ -10,12 +10,12 @@ import { Send, CheckCircle2 } from 'lucide-react';
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
-  const [status, setStatus] = useState('idle'); // idle, loading, success, error
+  const [status, setStatus] = useState('idle');
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
@@ -30,7 +30,7 @@ const ContactPage = () => {
     } catch (err) {
       console.error('Contact submission error:', err);
       setStatus('error');
-      setErrorMessage('Ocorreu um erro ao enviar sua mensagem. Tente novamente.');
+      setErrorMessage('Nao foi possivel enviar sua mensagem agora. Tente novamente.');
     }
   };
 
@@ -41,19 +41,19 @@ const ContactPage = () => {
       </Helmet>
 
       <div className="w-full max-w-2xl bg-secondary border-[3px] border-black rounded-3xl p-8 md:p-12 neo-shadow relative">
-        <h1 className="text-5xl font-black font-heading mb-4 text-center">Fale Conosco</h1>
-        <p className="text-xl font-bold text-center mb-10">Tem alguma dúvida? Envie uma mensagem e entraremos em contato.</p>
+        <h1 className="text-5xl font-black font-heading mb-4 text-center">Tire suas duvidas</h1>
+        <p className="text-xl font-bold text-center mb-10">Se voce nao sabe por onde comecar, me conte seu momento e eu te ajudo a encontrar o melhor caminho.</p>
 
         {status === 'success' ? (
           <div className="bg-card border-[3px] border-black rounded-2xl p-10 text-center neo-shadow flex flex-col items-center">
             <CheckCircle2 className="w-20 h-20 text-primary mb-6" />
-            <h2 className="text-3xl font-black font-heading mb-4">Mensagem Enviada!</h2>
-            <p className="text-lg font-bold mb-8">Recebemos seu contato e retornaremos em breve no seu e-mail.</p>
-            <Button 
+            <h2 className="text-3xl font-black font-heading mb-4">Mensagem enviada</h2>
+            <p className="text-lg font-bold mb-8">Recebi seu contato e vou responder no seu e-mail assim que puder.</p>
+            <Button
               onClick={() => setStatus('idle')}
               className="bg-primary text-black border-[3px] border-black rounded-xl neo-shadow hover:-translate-y-1 font-black text-lg h-14 px-8"
             >
-              Enviar nova mensagem
+              Enviar outra mensagem
             </Button>
           </div>
         ) : (
@@ -65,14 +65,14 @@ const ContactPage = () => {
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="name" className="font-bold text-lg">Nome Completo</Label>
+              <Label htmlFor="name" className="font-bold text-lg">Nome</Label>
               <Input
                 id="name"
                 name="name"
                 required
                 value={formData.name}
                 onChange={handleChange}
-                placeholder="Como podemos te chamar?"
+                placeholder="Como posso te chamar?"
                 className="h-14 border-[3px] border-black rounded-xl text-lg font-medium text-black focus-visible:ring-primary focus-visible:ring-offset-2"
               />
             </div>
@@ -99,7 +99,7 @@ const ContactPage = () => {
                 required
                 value={formData.message}
                 onChange={handleChange}
-                placeholder="Escreva sua dúvida aqui..."
+                placeholder="Me conte do que voce precisa hoje."
                 className="min-h-[150px] resize-none border-[3px] border-black rounded-xl text-lg font-medium text-black focus-visible:ring-primary focus-visible:ring-offset-2 p-4"
               />
             </div>
@@ -111,7 +111,7 @@ const ContactPage = () => {
             >
               {status === 'loading' ? 'Enviando...' : (
                 <>
-                  Enviar Mensagem <Send className="w-5 h-5 ml-2" />
+                  Enviar mensagem <Send className="w-5 h-5 ml-2" />
                 </>
               )}
             </Button>

@@ -20,7 +20,7 @@ const LanguageHubPage = () => {
 
   const products = getProductsForLanguage(language.slug);
   const multilingualProducts =
-    language.slug === 'multilingue' ? [] : getProductsForLanguage('multilingue');
+    language.slug === 'projeto-poliglota' ? [] : getProductsForLanguage('projeto-poliglota');
 
   return (
     <div className="min-h-screen bg-background pt-28 pb-20">

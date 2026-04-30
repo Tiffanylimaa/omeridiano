@@ -8,34 +8,34 @@
   :root {
     --background: 0 0% 100%;
     --foreground: 0 0% 0%;
-    
+
     --primary: 60 100% 88%;
     --primary-foreground: 0 0% 0%;
-    
+
     --secondary: 270 25% 80%;
     --secondary-foreground: 0 0% 0%;
-    
+
     --accent: 60 100% 88%;
     --accent-foreground: 0 0% 0%;
-    
+
     --card: 0 0% 100%;
     --card-foreground: 0 0% 0%;
-    
+
     --muted: 0 0% 96%;
     --muted-foreground: 0 0% 40%;
-    
+
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    
+
     --border: 0 0% 0%;
     --input: 0 0% 100%;
     --ring: 60 100% 88%;
-    
+
     --radius: 0px;
-    
+
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 0%;
-    
+
     --menu-transition-duration: 300ms;
     --menu-transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
     --chevron-rotation-expanded: 180deg;
@@ -64,6 +64,7 @@
 
   * {
     border-color: hsl(var(--border));
+    box-sizing: border-box;
   }
 
   html {
@@ -86,13 +87,25 @@
   p {
     line-height: 1.625;
   }
+
+}
+
+@layer components {
+  .logo-gradient-box {
+    background:
+      radial-gradient(140% 120% at 15% 20%, rgba(245, 230, 66, 0.92) 0%, rgba(245, 230, 66, 0) 46%),
+      radial-gradient(120% 110% at 82% 28%, rgba(192, 132, 252, 0.9) 0%, rgba(192, 132, 252, 0) 52%),
+      radial-gradient(120% 115% at 58% 82%, rgba(244, 114, 182, 0.85) 0%, rgba(244, 114, 182, 0) 54%),
+      linear-gradient(125deg, #f5e642 0%, #f8eb7a 22%, #d39af8 52%, #f39bc9 76%, #f5e642 100%);
+    background-blend-mode: screen, screen, overlay, normal;
+  }
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
-  
+
   .border-thick {
     border-width: 3px;
     border-color: hsl(var(--border));
@@ -101,7 +114,7 @@
   .neo-shadow {
     box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
   }
-  
+
   .neo-shadow-lg {
     box-shadow: 8px 8px 0px 0px rgba(0, 0, 0, 1);
   }
@@ -114,12 +127,12 @@
   .hover-lift {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  
+
   .hover-lift:hover {
     transform: translate(-2px, -2px);
     box-shadow: 6px 6px 0px 0px rgba(0, 0, 0, 1);
   }
-  
+
   .hover-lift:active {
     transform: translate(0, 0);
     box-shadow: none;
@@ -140,8 +153,9 @@
 
   .collapsible-content {
     overflow: hidden;
-    transition: max-height var(--menu-transition-duration) var(--menu-transition-timing),
-                opacity var(--menu-transition-duration) var(--menu-transition-timing);
+    transition:
+      max-height var(--menu-transition-duration) var(--menu-transition-timing),
+      opacity var(--menu-transition-duration) var(--menu-transition-timing);
   }
 
   .collapsible-closed {

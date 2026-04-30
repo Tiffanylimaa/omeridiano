@@ -3,10 +3,7 @@ import { useParams } from 'react-router-dom';
 import ProductCard from '@/components/ProductCard.jsx';
 import ConversionPageTemplate from '@/components/ConversionPageTemplate.jsx';
 import NotFoundPage from '@/pages/NotFoundPage.jsx';
-import {
-  getProductByRoute,
-  getRelatedProducts
-} from '@/data/catalog.js';
+import { getProductByRoute, getRelatedProducts } from '@/data/catalog.js';
 
 const ProductLandingPage = () => {
   const params = useParams();
@@ -38,9 +35,8 @@ const ProductLandingPage = () => {
         offers={product.offers}
         faqs={product.faqs}
         ctaHref={product.hotmartUrl}
-        ctaLabel={product.type === 'service' ? 'Reservar vaga' : 'Comprar agora'}
-        ctaNote="Esta página já está preparada para checkout. Assim que o link da Hotmart for publicado, a compra ficará disponível neste botão."
-        secondaryCtaLabel="Ir para contato"
+        ctaLabel={product.type === 'service' ? 'Quero conversar sobre isso' : 'Quero começar por aqui'}
+        secondaryCtaLabel="Tirar minhas dúvidas"
         secondaryCtaHref="/contato"
         backHref={backHref}
         backLabel={backLabel}
@@ -50,9 +46,9 @@ const ProductLandingPage = () => {
         <section className="pb-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="mb-8">
-              <h2 className="text-3xl md:text-4xl font-black font-heading">Continue nesta linha</h2>
+              <h2 className="text-3xl md:text-4xl font-black font-heading">Se isso faz sentido para você, comece por aqui também</h2>
               <p className="text-lg font-medium text-muted-foreground">
-                Outras páginas já estruturadas para converter dentro do mesmo ecossistema.
+                Outros materiais e apoios que podem ajudar no seu próximo passo.
               </p>
             </div>
 

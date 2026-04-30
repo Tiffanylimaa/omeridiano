@@ -39,7 +39,6 @@ const ProductLandingPage = () => {
         faqs={product.faqs}
         ctaHref={product.hotmartUrl}
         ctaLabel={product.type === 'service' ? 'Reservar vaga' : 'Comprar agora'}
-        ctaNote="Esta página já está preparada para checkout. Assim que o link da Hotmart for publicado, a compra ficará disponível neste botão."
         secondaryCtaLabel="Ir para contato"
         secondaryCtaHref="/contato"
         backHref={backHref}
